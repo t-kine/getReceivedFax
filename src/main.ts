@@ -1,8 +1,9 @@
+import { getMessagesBody } from './getMessagesBody';
+import { saveAttachments } from './saveAttachments';
+
 import dayjs from 'dayjs';
 import ja from 'dayjs/locale/ja';
 dayjs.locale(ja);
-import { getMessagesBody } from './getMessagesBody';
-import { saveAttachments } from './saveAttachments';
 
 // eslint-disable-next-line no-var, @typescript-eslint/no-explicit-any
 declare const global: any;
@@ -30,29 +31,24 @@ global.mainFunction = () => {
     .getValues();
 
   type manageValuesType = {
-    fromAddress: string;
-    toAddress: string;
-    subjectText: string;
+    [key in 'fromAddress' | 'toAddress' | 'subjectText']: string;
   };
-  /* const manageValues = manageValuesArray.reduce((prev, current): manageValuesType => {
-    // current = [key, value]
-  }, {} as manageValuesType) */
+  const manageValues = manageValuesArray.reduce(
+    (prev, current): manageValuesType => {
+      if (
+        current[0] === 'fromAddress' ||
+        current[0] === 'toAddress' ||
+        current[0] === 'subjectText'
+      )
+        prev[current[0]] = current[1];
+      return prev;
+    },
+    {} as manageValuesType,
+  );
 
-  /*
-   * [
-   *  [key, value],
-   *  [key2, value2]
-   * ]
-   *
-   * {
-   *  key: value,
-   *  key2: value2
-   * }
-   * */
-
-  const searchForFromAddress = 'no-reply@mail01.lcloud.jp';
-  const searchForToAddress = 'cs@pharmarket.co.jp';
-  const searchForSubjectText = '【MOVFAX】FAX受信のお知らせ';
+  const searchForFromAddress = manageValues.fromAddress;
+  const searchForToAddress = manageValues.toAddress;
+  const searchForSubjectText = manageValues.subjectText;
   const searchForFromAddressRegExp = new RegExp(`^${searchForFromAddress}$`);
   const searchForToAddressRegExp = new RegExp(`^${searchForToAddress}$`);
 
