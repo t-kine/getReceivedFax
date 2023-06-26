@@ -15,7 +15,7 @@ global.mainFunction = () => {
   const savedTime = Number(propertiesService.getProperty('savedTime')); // 保存された値の呼び出し
   const startTime = savedTime ? savedTime : now.subtract(5, 'minute').unix();
   const endTime = now.unix();
-  // propertiesService.setProperty('savedTime', `${endTime}`); // 実行された時間を保存
+  propertiesService.setProperty('savedTime', `${endTime}`); // 実行された時間を保存
 
   // SpreadSheet
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
