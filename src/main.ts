@@ -20,16 +20,17 @@ global.mainFunction = () => {
   // SpreadSheet
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = spreadsheet.getActiveSheet();
-  const manageValuesSheet = spreadsheet.getSheetByName('manage values');
+
+  // 設定シートから値を取得する
+  const manageValuesSheet = spreadsheet.getSheetByName('manage values'); // 設定シート
   if (!manageValuesSheet) return;
   const manageValuesLastRow = manageValuesSheet.getDataRange().getLastRow();
   const manageValuesLastColumn = manageValuesSheet
     .getDataRange()
     .getLastColumn();
   const manageValuesArray: string[][] = manageValuesSheet
-    .getRange(2, 2, manageValuesLastRow, manageValuesLastColumn)
+    .getRange(2, 1, manageValuesLastRow, manageValuesLastColumn)
     .getValues();
-
   type manageValuesType = {
     [key in 'fromAddress' | 'toAddress' | 'subjectText']: string;
   };
@@ -52,12 +53,11 @@ global.mainFunction = () => {
   const searchForFromAddressRegExp = new RegExp(`^${searchForFromAddress}$`);
   const searchForToAddressRegExp = new RegExp(`^${searchForToAddress}$`);
 
-  // Gmail
   const query = `from:(${searchForFromAddress}) subject:(${searchForSubjectText}) to:(${searchForToAddress}) has:attachment after:${startTime} before:${endTime}`;
   const messages = getMessagesBody(query, 200);
   if (messages.length === 0) return;
 
-  const beforeValue = Number(sheet.getRange(2, 2).getValue());
+  const beforeValue = Number(sheet.getRange(2, 2).getValue()); // 最新の通し番号を取得
   const beforeNum = isNaN(beforeValue) ? 0 : beforeValue;
 
   // Google Drive
